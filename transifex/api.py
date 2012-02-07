@@ -286,6 +286,33 @@ class TransifexAPI(object):
             handle.close()
             
             
+    def resource_stats(self, project_slug, resource_slug,
+           language_code=""):
+        """
+        Returns stats about the requested resource
+        
+        @param project_slug
+        	The project slug
+        @param resource_slug
+        	The resource slug
+        @param language
+        The language_code (optional)
+        	
+        @returns list
+           
+        @raises `TransifexAPIException`
+        """
+        url = '%s/project/%s/resource/%s/stats/' % (
+            self._base_api_url, project_slug, resource_slug
+        )
+        if language_code:
+            url = "%s%s/" % (url, language_code)
+        response = requests.get(url, auth=self._auth, params={'details':''})
+        if response.status_code != requests.codes['OK']:
+            raise TransifexAPIException(response)
+        return json.loads(response.content)
+
+
     def list_languages(self, project_slug, resource_slug):
         """
         List all the languages available for a given resource in a project
